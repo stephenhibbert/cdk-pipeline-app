@@ -19,5 +19,4 @@ class MyPipelineStack(cdk.Stack):
                         )
                     )
         
-        pipeline.add_stage(MyPipelineAppStage(self, "test",
-            env=cdk.Environment(account="674804771444", region="eu-west-1")))
+        pipeline.add_stage(MyPipelineAppStage(self, "Test"))
