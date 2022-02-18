@@ -11,7 +11,7 @@ class MyLambdaStack(cdk.Stack):
             self,
             "myMainFunction",
             function_name=cdk.PhysicalName.GENERATE_IF_NEEDED,
-            code=InlineCode("def main(event, context)\n  print(event)\n  return {'statusCode': 200, 'body': 'hello-world'}"),
+            code=InlineCode("def main(event,  context)\n  print(event)\n  return {'statusCode': 200, 'body': 'hello-world'}"),
             handler='index.main',
             runtime=Runtime.PYTHON_3_7
         )
