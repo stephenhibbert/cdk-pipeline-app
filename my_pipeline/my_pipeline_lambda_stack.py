@@ -19,15 +19,16 @@ class MyLambdaStack(cdk.Stack):
         )        
 
         my_main_func.add_permission("AllowLambdaAddPermission",
-            action='lambda:AddPermission',
-            principal=iam.AccountPrincipal("862701562420").with_conditions({
-                "ArnLike": {
-                    "aws:SourceArn": "arn:aws:iam::862701562420:role/cdk-hnb659fds-deploy-role-862701562420-eu-west-1"
-                },
-                "StringEquals": {
-                    "aws:SourceAccount": "862701562420"
-                }
-            })
+            action='lambda:*',
+            principal=iam.AccountPrincipal("862701562420")
+            # .with_conditions({
+            #     "ArnLike": {
+            #         "aws:SourceArn": "arn:aws:iam::862701562420:role/cdk-hnb659fds-deploy-role-862701562420-eu-west-1"
+            #     },
+            #     "StringEquals": {
+            #         "aws:SourceAccount": "862701562420"
+            #     }
+            # })
         )
 
         # We assign the function to a local variable for the Object.
