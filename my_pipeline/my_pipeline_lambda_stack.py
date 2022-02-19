@@ -2,7 +2,7 @@ from email import policy
 from unicodedata import name
 import aws_cdk as cdk
 from constructs import Construct
-from aws_cdk.aws_iam import ServicePrincipal
+import aws_cdk.aws_iam as iam
 from aws_cdk.aws_lambda import Function, InlineCode, Runtime, IFunction
 
 class MyLambdaStack(cdk.Stack):
@@ -16,15 +16,18 @@ class MyLambdaStack(cdk.Stack):
             code=InlineCode("def main(event,  context)\n  print(event)\n  return {'statusCode': 200, 'body': 'hello-world'}"),
             handler='index.main',
             runtime=Runtime.PYTHON_3_7
-        )
-
-        service_principal = ServicePrincipal("cloudformation.amazonaws.com")
-        source_account = "862701562420"
+        )        
 
         my_main_func.add_permission("AllowLambdaAddPermission",
-            principal=service_principal,
-            source_account=source_account,
-            action='lambda:AddPermission'
+            action='lambda:AddPermission',
+            principal=iam.AccountPrincipal("862701562420").with_conditions({
+                "ArnLike": {
+                    "aws:SourceArn": "arn:aws:iam::862701562420:role/cdk-hnb659fds-deploy-role-862701562420-eu-west-1"
+                },
+                "StringEquals": {
+                    "aws:SourceAccount": "862701562420"
+                }
+            })
         )
 
         # We assign the function to a local variable for the Object.
