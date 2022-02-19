@@ -2,6 +2,7 @@ from email import policy
 from unicodedata import name
 import aws_cdk as cdk
 from constructs import Construct
+from aws_cdk.aws_iam import ServicePrincipal
 from aws_cdk.aws_lambda import Function, InlineCode, Runtime, IFunction
 
 class MyLambdaStack(cdk.Stack):
@@ -14,7 +15,16 @@ class MyLambdaStack(cdk.Stack):
             function_name=cdk.PhysicalName.GENERATE_IF_NEEDED,
             code=InlineCode("def main(event,  context)\n  print(event)\n  return {'statusCode': 200, 'body': 'hello-world'}"),
             handler='index.main',
-            runtime=Runtime.PYTHON_3_7,
+            runtime=Runtime.PYTHON_3_7
+        )
+
+        service_principal = ServicePrincipal("cloudformation.amazonaws.com")
+        source_account = "862701562420"
+
+        my_main_func.add_permission("AllowLambdaAddPermission",
+            principal=service_principal,
+            source_account=source_account,
+            action='lambda:AddPermission'
         )
 
         # We assign the function to a local variable for the Object.
