@@ -8,5 +8,5 @@ class MyPipelineAppStage(cdk.Stage):
         super().__init__(scope, construct_id, **kwargs)
 
         lambdaStack = MyLambdaStack(self, "LambdaStack", env=cdk.Environment(account="674804771444", region="eu-west-1"))
-        MyApiStack(self, "ApiStack", referenced_function=lambdaStack.main_function, env=cdk.Environment(account="862701562420", region="eu-west-1"))
+        MyApiStack(self, "ApiStack", referenced_queue=lambdaStack.main_queue, env=cdk.Environment(account="862701562420", region="eu-west-1"))
         
