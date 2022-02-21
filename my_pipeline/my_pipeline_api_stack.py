@@ -43,7 +43,7 @@ class MyApiStack(cdk.Stack):
         #Create AWS Integration Object for SQS: https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_apigateway/AwsIntegration.html
         api_resource_sqs_integration = apigw.AwsIntegration(
             service="sqs",
-            integration_http_method="POST",
+            integration_http_method="GET",
             path=referenced_queue.queue_name,
             options=api_integration_options
         )
@@ -53,7 +53,7 @@ class MyApiStack(cdk.Stack):
 
         #Add the API GW Integration to the "example" API GW Resource
         api_resource.add_method(
-            "POST",
+            "GET",
             api_resource_sqs_integration,
             method_responses=[method_response]
         )
