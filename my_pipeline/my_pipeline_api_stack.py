@@ -8,24 +8,24 @@ class MyApiStack(cdk.Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        #Create the SQS Queue
+        # Create an SQS Queue
         my_queue = Queue(self, "SQSQueue", queue_name=cdk.PhysicalName.GENERATE_IF_NEEDED)
 
-        #Create an API GW Rest API
+        # Create an API GW Rest API
         base_api = apigw.RestApi(self, 'ApiGW',rest_api_name='TestAPI')        
         base_api.root.add_method("ANY")
 
-        #Create a resource named "example" on the base API
+        # Create a resource named "example" on the base API
         api_resource = base_api.root.add_resource('example')
 
-        #Create API Integration Response object: https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_apigateway/IntegrationResponse.html
+        # Create API integration response object
         integration_response = apigw.IntegrationResponse(
             status_code="200",
             response_templates={"application/json": ""},
 
         )
 
-        #Create API Integration Options object: https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_apigateway/IntegrationOptions.html
+        # Create API integration options object
         api_integration_options = apigw.IntegrationOptions(
             integration_responses=[integration_response],
             request_templates={"application/json": "Action=SendMessage&MessageBody=$input.body"},
@@ -33,7 +33,7 @@ class MyApiStack(cdk.Stack):
             request_parameters={"integration.request.header.Content-Type": "'application/x-www-form-urlencoded'"},
         )
 
-        #Create AWS Integration Object for SQS: https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_apigateway/AwsIntegration.html
+        # Create AWS integration object for SQS
         api_resource_sqs_integration = apigw.AwsIntegration(
             service="sqs",
             integration_http_method="GET",
@@ -41,17 +41,17 @@ class MyApiStack(cdk.Stack):
             options=api_integration_options
         )
 
-        #Create a Method Response Object: https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_apigateway/MethodResponse.html
+        # Create a method response object
         method_response = apigw.MethodResponse(status_code="200")
 
-        #Add the API GW Integration to the "example" API GW Resource
+        # Add the API GW Integration to the "example" API GW Resource
         api_resource.add_method(
             "GET",
             api_resource_sqs_integration,
             method_responses=[method_response]
         )
         
-        # We assign the function to a local variable for the Object.
+        # We assign the queue to a local variable
         self._queue = my_queue
     
     # Using the property decorator
