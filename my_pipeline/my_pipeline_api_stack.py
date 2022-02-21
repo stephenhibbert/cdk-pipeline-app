@@ -40,7 +40,7 @@ class MyApiStack(cdk.Stack):
             integration_responses=[integration_response],
             request_templates={"application/json": "Action=SendMessage&MessageBody=$input.body"},
             passthrough_behavior=apigw.PassthroughBehavior.NEVER,
-            request_parameters={"integration.request.header.Content-Type": "'application/x-www-form-urlencoded'"},
+            request_parameters={"integration.request.header.Content-Type": "'application/json'"},
         )
 
         # Create AWS integration object for SQS

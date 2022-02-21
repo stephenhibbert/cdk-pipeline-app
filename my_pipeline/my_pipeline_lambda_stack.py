@@ -26,7 +26,7 @@ class MyLambdaStack(cdk.Stack):
         # Give Lambda execution role permissions to call ReceiveMessage on SQS in the other account
         referenced_queue.add_to_resource_policy(
             iam.PolicyStatement(
-                principals=[iam.AccountPrincipal(account_id=self.account)],
+                principals=[iam.AccountPrincipal(account_id=self.account), iam.ArnPrincipal(my_main_func.role.role_arn)],
                 effect=iam.Effect.ALLOW,
                 actions=["sqs:*"]
             )
