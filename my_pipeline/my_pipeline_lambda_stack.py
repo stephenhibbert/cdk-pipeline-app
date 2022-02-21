@@ -16,6 +16,9 @@ class MyLambdaStack(cdk.Stack):
             assumed_by=iam.ServicePrincipal("lambda.amazonaws.com")
         )
 
+        # Give execution role permissions to call ReceiveMessage on SQS
+        referenced_queue.grant_consume_messages(my_role)
+
         my_main_func = Function(self, "myMainFunction",
             code=InlineCode("def main(event,  context)\n  print(event)\n  return {'statusCode': 200, 'body': 'hello-world'}"),
             handler='index.main',
