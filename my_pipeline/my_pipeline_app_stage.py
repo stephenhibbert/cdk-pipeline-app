@@ -10,4 +10,3 @@ class MyPipelineAppStage(cdk.Stage):
         apiStack = MyApiStack(self, "ApiStack", env=cdk.Environment(account="862701562420", region="eu-west-1"))
         lambdaStack = MyLambdaStack(self, "LambdaStack", referenced_queue=apiStack.main_queue, env=cdk.Environment(account="674804771444", region="eu-west-1"))
 
-        lambdaStack.add_dependency()
