@@ -26,13 +26,14 @@ class MyLambdaStack(cdk.Stack):
         )
 
         # Give Lambda execution role permissions to call ReceiveMessage on SQS in the other account
-        # referenced_queue.grant_consume_messages(my_main_func)
+        referenced_queue.grant_consume_messages(my_main_func)
         referenced_queue.add_to_resource_policy(
             iam.PolicyStatement(
-                principals=[iam.ArnPrincipal(my_role.role_arn)],
+                principals=[iam.ArnPrincipal(my_main_func.role.role_arn)],
                 effect=iam.Effect.ALLOW,
-                actions=["sqs:*"])
+                actions=["sqs:*"]
             )
+        )
 
         # Create an SQS event source for Lambda
         sqs_event_source = lambda_event_sources.SqsEventSource(referenced_queue)
