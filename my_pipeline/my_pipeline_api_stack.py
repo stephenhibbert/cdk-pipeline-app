@@ -13,9 +13,7 @@ class MyApiStack(cdk.Stack):
         my_queue = Queue(self, "SQSQueue", queue_name=cdk.PhysicalName.GENERATE_IF_NEEDED)
 
         # Create the API GW service role with permissions to call SQS
-        rest_api_role = iam.Role(
-            self,
-            "RestAPIRole",
+        rest_api_role = iam.Role(self, "RestAPIRole",
             assumed_by=iam.ServicePrincipal("apigateway.amazonaws.com"),
             managed_policies=[iam.ManagedPolicy.from_aws_managed_policy_name("AmazonSQSFullAccess")]
         )
@@ -40,13 +38,13 @@ class MyApiStack(cdk.Stack):
             integration_responses=[integration_response],
             request_templates={"application/json": "Action=SendMessage&MessageBody=$input.body"},
             passthrough_behavior=apigw.PassthroughBehavior.NEVER,
-            request_parameters={"integration.request.header.Content-Type": "'application/json'"},
+            request_parameters={"integration.request.header.Content-Type": "'application/x-www-form-urlencoded'"},
         )
 
         # Create AWS integration object for SQS
         api_resource_sqs_integration = apigw.AwsIntegration(
             service="sqs",
-            integration_http_method="GET",
+            integration_http_method="POST",
             path=my_queue.queue_name,
             options=api_integration_options
         )
@@ -56,7 +54,7 @@ class MyApiStack(cdk.Stack):
 
         # Add the API GW Integration to the "example" API GW Resource
         api_resource.add_method(
-            "GET",
+            "POST",
             api_resource_sqs_integration,
             method_responses=[method_response]
         )
