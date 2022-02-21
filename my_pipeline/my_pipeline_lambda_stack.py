@@ -11,22 +11,18 @@ class MyLambdaStack(cdk.Stack):
     def __init__(self, scope: Construct, construct_id: str, referenced_queue: IQueue, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        # Lambda execution role
-        my_role = iam.Role(self, "My Role",
-            role_name=cdk.PhysicalName.GENERATE_IF_NEEDED,
-            assumed_by=iam.ServicePrincipal("lambda.amazonaws.com")
-        )
-
         # Create the Lambda function
         my_main_func = Function(self, "myMainFunction",
             code=InlineCode("def main(event,  context)\n  print(event)\n  return {'statusCode': 200, 'body': 'hello-world'}"),
             handler='index.main',
             runtime=Runtime.PYTHON_3_9,
-            role=my_role
+            role=iam.Role(self, "My Role",
+                role_name=cdk.PhysicalName.GENERATE_IF_NEEDED,
+                assumed_by=iam.ServicePrincipal("lambda.amazonaws.com")
+            )
         )
 
         # Give Lambda execution role permissions to call ReceiveMessage on SQS in the other account
-        referenced_queue.grant_consume_messages(my_main_func)
         referenced_queue.add_to_resource_policy(
             iam.PolicyStatement(
                 principals=[iam.ArnPrincipal(my_main_func.role.role_arn)],
