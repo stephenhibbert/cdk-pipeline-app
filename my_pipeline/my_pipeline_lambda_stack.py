@@ -13,7 +13,7 @@ class MyLambdaStack(cdk.Stack):
 
         my_role = iam.Role(self, "My Role",
             role_name=cdk.PhysicalName.GENERATE_IF_NEEDED,
-            assumed_by=iam.ServicePrincipal("sqs.amazonaws.com")
+            assumed_by=iam.ServicePrincipal("lambda.amazonaws.com")
         )
 
         my_main_func = Function(self, "myMainFunction",

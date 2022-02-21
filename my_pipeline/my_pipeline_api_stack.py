@@ -27,7 +27,6 @@ class MyApiStack(cdk.Stack):
 
         #Create API Integration Options object: https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_apigateway/IntegrationOptions.html
         api_integration_options = apigw.IntegrationOptions(
-            # credentials_role=rest_api_role,
             integration_responses=[integration_response],
             request_templates={"application/json": "Action=SendMessage&MessageBody=$input.body"},
             passthrough_behavior=apigw.PassthroughBehavior.NEVER,
