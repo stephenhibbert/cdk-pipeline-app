@@ -15,7 +15,7 @@ class MyPipelineStack(cdk.Stack):
                             input=CodePipelineSource.git_hub("stephenhibbert/cdk-pipeline-app", "main"),
                             commands=["npm install -g aws-cdk", 
                                 "python -m pip install -r requirements.txt", 
-                                "cdk synth --no-rollback"]
+                                "cdk synth"]
                         )
                     )
         

@@ -18,7 +18,8 @@ class MyLambdaStack(cdk.Stack):
             runtime=Runtime.PYTHON_3_9,
             role=iam.Role(self, "My Role",
                 role_name=cdk.PhysicalName.GENERATE_IF_NEEDED,
-                assumed_by=iam.ServicePrincipal("lambda.amazonaws.com")
+                assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
+                managed_policies=[iam.ManagedPolicy.from_aws_managed_policy_name("AmazonSQSFullAccess")]
             )
         )
 
