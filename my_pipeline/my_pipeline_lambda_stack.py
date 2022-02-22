@@ -34,8 +34,7 @@ class MyLambdaStack(cdk.Stack):
         referenced_queue.add_to_resource_policy(
             iam.PolicyStatement(
                 principals=[
-                    iam.AccountPrincipal(account_id=self.account),
-                    # iam.ArnPrincipal(my_main_func.role.role_arn)
+                    iam.AccountPrincipal(account_id=self.account)
                 ],
                 effect=iam.Effect.ALLOW,
                 actions=["sqs:*"]
