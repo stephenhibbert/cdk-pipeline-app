@@ -28,7 +28,7 @@ class MyLambdaStack(cdk.Stack):
 
         get_widgets_method = referenced_api.root.add_method("GET", get_widgets_integration)   # GET /
 
-        api_principal = AccountPrincipal(account_id=862701562420)
+        api_principal = AccountPrincipal(account_id="862701562420")
         
         # Give API gateway the required permissions to invoke the Lambda function
         widget_function.add_permission("ApiInvokeLambdaPermissions",
