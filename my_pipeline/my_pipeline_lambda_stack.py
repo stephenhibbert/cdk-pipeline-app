@@ -22,7 +22,7 @@ class MyLambdaStack(cdk.Stack):
         # Not using Lambda integration because need manual control of permissions for cross-account access
         get_widgets_integration = AwsIntegration(
             service="lambda",
-            path='2015-03-31/functions/${widget_function.function_arn}/invocations',
+            path=f"2015-03-31/functions/{widget_function.function_arn}/invocations",
             proxy=False
         )
 
