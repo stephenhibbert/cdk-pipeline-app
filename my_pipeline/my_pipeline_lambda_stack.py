@@ -3,7 +3,7 @@ import aws_cdk as cdk
 from constructs import Construct
 from aws_cdk.aws_lambda import Function, InlineCode, Runtime
 from aws_cdk.aws_apigateway import IRestApi, AwsIntegration
-from aws_cdk.aws_iam import ServicePrincipal
+from aws_cdk.aws_iam import AccountPrincipal
 
 class MyLambdaStack(cdk.Stack):
     def __init__(self, scope: Construct, construct_id: str, referenced_api: IRestApi, **kwargs) -> None:
@@ -19,7 +19,7 @@ class MyLambdaStack(cdk.Stack):
         )
         widget_function.function_arn
 
-        # Not using Lambda integration because need manual control of permissions for cross-account
+        # Not using Lambda integration because need manual control of permissions for cross-account access
         get_widgets_integration = AwsIntegration(
             service="lambda",
             path='2015-03-31/functions/${widget_function.function_arn}/invocations',
@@ -28,8 +28,9 @@ class MyLambdaStack(cdk.Stack):
 
         get_widgets_method = referenced_api.root.add_method("GET", get_widgets_integration)   # GET /
 
-        api_principal = ServicePrincipal('apigateway.amazonaws.com')
+        api_principal = AccountPrincipal(account_id=862701562420)
         
+        # Give API gateway the required permissions to invoke the Lambda function
         widget_function.add_permission("ApiInvokeLambdaPermissions",
             principal=api_principal,
             scope=get_widgets_method,
