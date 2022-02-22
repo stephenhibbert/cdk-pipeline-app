@@ -20,8 +20,8 @@ class MyLambdaStack(cdk.Stack):
                 role_name=cdk.PhysicalName.GENERATE_IF_NEEDED,
                 assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
                 managed_policies=[
-                    iam.ManagedPolicy.from_aws_managed_policy_name("AmazonSQSFullAccess"),
-                    iam.ManagedPolicy.from_aws_managed_policy_name("AWSLambdaBasicExecutionRole")
+                    # Give permissions that the function needs to read items from Amazon SQS and to write logs to Amazon CloudWatch Logs
+                    iam.ManagedPolicy.from_aws_managed_policy_name("service-role/AWSLambdaSQSQueueExecutionRole")
                 ]
             )
         )
@@ -29,7 +29,10 @@ class MyLambdaStack(cdk.Stack):
         # Give Lambda execution role permissions to call ReceiveMessage on SQS in the other account
         referenced_queue.add_to_resource_policy(
             iam.PolicyStatement(
-                principals=[iam.AccountPrincipal(account_id=self.account), iam.ArnPrincipal(my_main_func.role.role_arn)],
+                principals=[
+                    iam.AccountPrincipal(account_id=self.account),
+                    # iam.ArnPrincipal(my_main_func.role.role_arn)
+                ],
                 effect=iam.Effect.ALLOW,
                 actions=["sqs:*"]
             )
