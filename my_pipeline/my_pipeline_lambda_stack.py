@@ -3,7 +3,7 @@ import aws_cdk as cdk
 from constructs import Construct
 from aws_cdk.aws_lambda import Function, InlineCode, Runtime
 from aws_cdk.aws_apigateway import IRestApi, AwsIntegration
-from aws_cdk.aws_iam import AccountPrincipal
+from aws_cdk.aws_iam import AccountPrincipal, Effect
 
 class MyLambdaStack(cdk.Stack):
     def __init__(self, scope: Construct, construct_id: str, referenced_api: IRestApi, **kwargs) -> None:
@@ -30,10 +30,9 @@ class MyLambdaStack(cdk.Stack):
         api_principal = AccountPrincipal(account_id="862701562420")
         
         # Give API gateway the required permissions to invoke the Lambda function
-        # widget_function.add_permission("ApiInvokeLambdaPermissions",
-        #     principal=api_principal,
-        #     scope=get_widgets_method,
-        #     source_arn=get_widgets_method.method_arn
-        # )
+        widget_function.add_permission("ApiInvokeLambdaPermissions",
+            principal=api_principal,
+            action="lambda:*"
+        )
 
 
