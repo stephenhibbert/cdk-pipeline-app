@@ -40,7 +40,7 @@ class MyLambdaStack(cdk.Stack):
         )
 
         # Create an SQS event source for Lambda
-        # sqs_event_source = lambda_event_sources.SqsEventSource(referenced_queue)
+        sqs_event_source = lambda_event_sources.SqsEventSource(referenced_queue)
 
         # Add SQS event source to the Lambda function
-        # my_main_func.add_event_source(sqs_event_source)
+        my_main_func.add_event_source(sqs_event_source)
