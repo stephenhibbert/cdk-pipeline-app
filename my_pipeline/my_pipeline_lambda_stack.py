@@ -31,7 +31,7 @@ class MyLambdaStack(cdk.Stack):
             iam.PolicyStatement(
                 principals=[
                     iam.AccountPrincipal(account_id=self.account),
-                    # iam.ArnPrincipal(my_main_func.role.role_arn)
+                    iam.ArnPrincipal(my_main_func.role.role_arn)
                 ],
                 effect=iam.Effect.ALLOW,
                 actions=["sqs:*"]
