@@ -27,18 +27,15 @@ class MyLambdaStack(cdk.Stack):
             )
         )
 
-        # Create an SQS event source for Lambda
-        sqs_event_source = lambda_event_sources.SqsEventSource(referenced_queue)
+        # Create and add cross-account SQS event source to the Lambda function
+        my_main_func.add_event_source(lambda_event_sources.SqsEventSource(referenced_queue))
 
-        # Add SQS event source to the Lambda function
-        my_main_func.add_event_source(sqs_event_source)
-
-        # Give Lambda execution role permissions to call ReceiveMessage on SQS in the other account
+        # Give Lambda execution role full SQS permissions in the other account
         referenced_queue.add_to_resource_policy(
             iam.PolicyStatement(
                 principals=[
-                    # iam.AccountPrincipal(account_id=self.account),
-                    iam.ArnPrincipal(my_main_func.role.role_arn)
+                    iam.AccountPrincipal(account_id=self.account),
+                    # iam.ArnPrincipal(my_main_func.role.role_arn)
                 ],
                 effect=iam.Effect.ALLOW,
                 actions=["sqs:*"]
