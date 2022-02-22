@@ -21,7 +21,8 @@ class MyLambdaStack(cdk.Stack):
                 assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
                 managed_policies=[
                     # Give permissions that the function needs to read items from Amazon SQS and to write logs to Amazon CloudWatch Logs
-                    iam.ManagedPolicy.from_aws_managed_policy_name("service-role/AWSLambdaSQSQueueExecutionRole")
+                    iam.ManagedPolicy.from_aws_managed_policy_name("service-role/AWSLambdaSQSQueueExecutionRole"),
+                    iam.ManagedPolicy.from_aws_managed_policy_name("AmazonSQSFullAccess")
                 ]
             )
         )
