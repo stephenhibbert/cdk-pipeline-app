@@ -13,6 +13,8 @@ class MyApiStack(cdk.Stack):
 
         # We assign the function to a local variable for the Object.
         self._api = api
+
+        cdk.CfnOutput(self, "URL", value=api.url)
     
 
     # Using the property decorator
