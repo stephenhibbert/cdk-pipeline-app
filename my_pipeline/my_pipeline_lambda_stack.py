@@ -22,8 +22,7 @@ class MyLambdaStack(cdk.Stack):
         # Not using Lambda integration because need manual control of permissions for cross-account access
         get_widgets_integration = AwsIntegration(
             service="lambda",
-            path=f"2015-03-31/functions/{widget_function.function_arn}/invocations",
-            proxy=False
+            path=f"2015-03-31/functions/{widget_function.function_arn}/invocations"
         )
 
         get_widgets_method = referenced_api.root.add_method("GET", get_widgets_integration)   # GET /
@@ -31,10 +30,10 @@ class MyLambdaStack(cdk.Stack):
         api_principal = AccountPrincipal(account_id="862701562420")
         
         # Give API gateway the required permissions to invoke the Lambda function
-        widget_function.add_permission("ApiInvokeLambdaPermissions",
-            principal=api_principal,
-            scope=get_widgets_method,
-            source_arn=get_widgets_method.method_arn
-        )
+        # widget_function.add_permission("ApiInvokeLambdaPermissions",
+        #     principal=api_principal,
+        #     scope=get_widgets_method,
+        #     source_arn=get_widgets_method.method_arn
+        # )
 
 
