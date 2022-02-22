@@ -19,7 +19,10 @@ class MyLambdaStack(cdk.Stack):
             role=iam.Role(self, "My Role",
                 role_name=cdk.PhysicalName.GENERATE_IF_NEEDED,
                 assumed_by=iam.ServicePrincipal("lambda.amazonaws.com"),
-                managed_policies=[iam.ManagedPolicy.from_aws_managed_policy_name("AmazonSQSFullAccess")]
+                managed_policies=[
+                    iam.ManagedPolicy.from_aws_managed_policy_name("AmazonSQSFullAccess"),
+                    iam.ManagedPolicy.from_aws_managed_policy_name("AWSLambdaBasicExecutionRole")
+                ]
             )
         )
 
