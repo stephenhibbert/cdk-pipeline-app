@@ -1,7 +1,7 @@
 import aws_cdk as cdk
 from constructs import Construct
 from aws_cdk.aws_lambda import Function, Code, Runtime
-from aws_cdk.aws_apigateway import IRestApi, AwsIntegration, IntegrationResponse, IntegrationOptions
+from aws_cdk.aws_apigateway import IRestApi, AwsIntegration, IntegrationResponse, IntegrationOptions, MethodResponse, PassthroughBehavior
 from aws_cdk.aws_iam import ServicePrincipal
 
 class MyLambdaStack(cdk.Stack):
@@ -17,14 +17,30 @@ class MyLambdaStack(cdk.Stack):
             runtime=Runtime.PYTHON_3_9,
         )
 
-        # Not using Lambda integration because need manual control of permissions for cross-account access
-        get_widgets_method = referenced_api.root.add_method("GET", AwsIntegration(
+
+        integration_response = IntegrationResponse(
+            status_code="200",
+            response_templates={"application/json": ""},
+        )
+
+        api_integration_options = IntegrationOptions(
+            integration_responses=[integration_response],
+            request_templates={"application/json": "Action=SendMessage&MessageBody=$input.body"},
+            passthrough_behavior=PassthroughBehavior.NEVER,
+            request_parameters={"integration.request.header.Content-Type": "'application/x-www-form-urlencoded'"},
+        )
+
+        api_lambda_integration = AwsIntegration(
             service="lambda",
             path=f"2015-03-31/functions/{widget_function.function_arn}/invocations",
-            options=IntegrationOptions(
-                    integration_responses=[IntegrationResponse(status_code="200")]
-                )
+            options=api_integration_options
             )
+
+        # Not using Lambda integration because need manual control of permissions for cross-account access
+        get_widgets_method = referenced_api.root.add_method(
+            "GET",
+            api_lambda_integration,
+            method_responses=[MethodResponse(status_code="200")] 
         )
 
         api_principal = ServicePrincipal("apigateway.amazonaws.com")
