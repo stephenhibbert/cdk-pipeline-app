@@ -8,14 +8,14 @@ class MyLambdaStack(cdk.Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        # powertoolsLayer = LambdaPowertoolsLayer(self, 'PowertoolsLayer')
+        powertoolsLayer = LambdaPowertoolsLayer(self, 'PowertoolsLayer')
 
         backend_function = Function(self, "myMainFunction",
             function_name=cdk.PhysicalName.GENERATE_IF_NEEDED,
             code=Code.from_asset("lambda"),
             handler='backend-lambda.handler',
             runtime=Runtime.PYTHON_3_9,
-            # layers=[powertoolsLayer],
+            layers=[powertoolsLayer],
             tracing=Tracing.ACTIVE
         )
 
