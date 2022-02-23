@@ -7,5 +7,11 @@ class MyPipelineAppStage(cdk.Stage):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
         
-        apiStack = MyApiStack(self, "ApiStack", env=cdk.Environment(account="862701562420", region="eu-west-1"))
-        MyLambdaStack(self, "LambdaStack", referenced_api=apiStack.main_api, env=cdk.Environment(account="674804771444", region="eu-west-1"))
+        api_stack = MyApiStack(self, "ApiStack", 
+            env=cdk.Environment(account="862701562420", region="eu-west-1")
+        )
+        
+        MyLambdaStack(self, "LambdaStack", 
+            referenced_api=api_stack.main_api, 
+            env=cdk.Environment(account="674804771444", region="eu-west-1")
+        )

@@ -1,4 +1,3 @@
-from unicodedata import name
 import aws_cdk as cdk
 from constructs import Construct
 from aws_cdk.aws_lambda import Function, Code, Runtime
@@ -13,8 +12,8 @@ class MyLambdaStack(cdk.Stack):
             self,
             "myMainFunction",
             function_name=cdk.PhysicalName.GENERATE_IF_NEEDED,
-            code=Code.from_asset('lambda'),
-            handler='index.main',
+            code=Code.from_asset("lambda"),
+            handler='widget-lambda.handler',
             runtime=Runtime.PYTHON_3_9,
         )
 
