@@ -3,7 +3,7 @@ import aws_cdk as cdk
 from constructs import Construct
 from aws_cdk.aws_lambda import Function, InlineCode, Runtime
 from aws_cdk.aws_apigateway import IRestApi, AwsIntegration
-from aws_cdk.aws_iam import AccountPrincipal
+from aws_cdk.aws_iam import ServicePrincipal
 
 class MyLambdaStack(cdk.Stack):
     def __init__(self, scope: Construct, construct_id: str, referenced_api: IRestApi, **kwargs) -> None:
@@ -26,22 +26,12 @@ class MyLambdaStack(cdk.Stack):
         )
 
         get_widgets_method = referenced_api.root.add_method("GET", get_widgets_integration)   # GET /
+        api_principal = ServicePrincipal("apigateway.amazonaws.com")
 
-        api_principal = AccountPrincipal(account_id="862701562420")
-        
-        print(get_widgets_method.method_arn)
-
-        # Give API gateway the required permissions to invoke the Lambda function
+        # aws lambda add-permission --function-name "arn:aws:lambda:eu-west-1:674804771444:function:test-lambdastackckmymainfunctiondb89099e5d1f3e555605" --source-arn "arn:aws:execute-api:eu-west-1:862701562420:d3v3x3nudb/*/GET/"   --principal apigateway.amazonaws.com   --statement-id 48284be6-0732-4ef8-9900-7cbf820719b3   --action lambda:InvokeFunction
+        # Manually give API gateway the required permissions to invoke the Lambda function
         widget_function.add_permission("ApiInvokeLambdaPermissions",
             principal=api_principal,
             action="lambda:InvokeFunction",
             source_arn="arn:aws:execute-api:eu-west-1:862701562420:d3v3x3nudb/*/GET/",
         )
-
-        # Give API gateway the required permissions to invoke the Lambda function
-        # widget_function.add_permission("ApiInvokeLambdaPermissions",
-        #     principal=api_principal,
-        #     source_arn=get_widgets_method.method_arn,
-        #     action="lambda:InvokeFunction",
-        # )
-
