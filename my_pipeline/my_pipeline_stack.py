@@ -16,7 +16,9 @@ class MyPipelineStack(cdk.Stack):
                             commands=["npm install -g aws-cdk", 
                                 "python -m pip install -r requirements.txt", 
                                 "cdk synth"]
-                        )
+                        ),
+                        # Turn this on because the pipeline uses Docker image assets
+                        docker_enabled_for_self_mutation=True
                     )
         
-        pipeline.add_stage(MyPipelineAppStage(self, "Test"))
+        pipeline.add_stage(MyPipelineAppStage(self, "Lambda API"))
