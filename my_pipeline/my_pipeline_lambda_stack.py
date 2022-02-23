@@ -1,7 +1,7 @@
 from unicodedata import name
 import aws_cdk as cdk
 from constructs import Construct
-from aws_cdk.aws_lambda import Function, InlineCode, Runtime
+from aws_cdk.aws_lambda import Function, Code, Runtime
 from aws_cdk.aws_apigateway import IRestApi, AwsIntegration
 from aws_cdk.aws_iam import ServicePrincipal
 
@@ -13,11 +13,10 @@ class MyLambdaStack(cdk.Stack):
             self,
             "myMainFunction",
             function_name=cdk.PhysicalName.GENERATE_IF_NEEDED,
-            code=InlineCode("def main(event,  context)\n  print(event)\n  return {'statusCode': 200, 'body': 'hello-world'}"),
+            code=Code.from_asset('lambda'),
             handler='index.main',
-            runtime=Runtime.PYTHON_3_7,
+            runtime=Runtime.PYTHON_3_9,
         )
-        widget_function.function_arn
 
         # Not using Lambda integration because need manual control of permissions for cross-account access
         get_widgets_integration = AwsIntegration(
@@ -29,7 +28,8 @@ class MyLambdaStack(cdk.Stack):
         api_principal = ServicePrincipal("apigateway.amazonaws.com")
 
         # aws lambda add-permission --function-name "arn:aws:lambda:eu-west-1:674804771444:function:test-lambdastackckmymainfunctiondb89099e5d1f3e555605" --source-arn "arn:aws:execute-api:eu-west-1:862701562420:d3v3x3nudb/*/GET/"   --principal apigateway.amazonaws.com   --statement-id 48284be6-0732-4ef8-9900-7cbf820719b3   --action lambda:InvokeFunction
-        # Manually give API gateway the required permissions to invoke the Lambda function
+        
+        # Manually give Lambda the required permissions to be invoked by API Gateway in another account
         widget_function.add_permission("ApiInvokeLambdaPermissions",
             principal=api_principal,
             action="lambda:InvokeFunction",
