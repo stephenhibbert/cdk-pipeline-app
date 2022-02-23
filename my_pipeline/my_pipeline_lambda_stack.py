@@ -35,8 +35,7 @@ class MyLambdaStack(cdk.Stack):
         widget_function.add_permission("ApiInvokeLambdaPermissions",
             principal=api_principal,
             action="lambda:InvokeFunction",
-            # source_arn=get_widgets_method.method_arn,
-            source_account="862701562420"
+            source_arn="arn:aws:execute-api:eu-west-1:862701562420:d3v3x3nudb/*/GET/",
         )
 
         # Give API gateway the required permissions to invoke the Lambda function
