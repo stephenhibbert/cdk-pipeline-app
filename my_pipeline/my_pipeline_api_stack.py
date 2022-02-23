@@ -1,8 +1,9 @@
 import aws_cdk as cdk
 from constructs import Construct
 from aws_cdk.aws_apigateway import RestApi, IRestApi, LambdaIntegration, Method
-from aws_cdk.aws_lambda import IFunction, Code, Runtime, CfnPermission
+from aws_cdk.aws_lambda import IFunction, CfnPermission
 
+# Override the bind function to remove the permissions so we can add them manually code from https://github.com/aws/aws-cdk/issues/9327
 class CustomLambdaIntegration(LambdaIntegration):
     def __init__(self, handler, **kwargs):
         super().__init__(handler, **kwargs)
@@ -26,15 +27,13 @@ class MyApiStack(cdk.Stack):
         api = RestApi(self, "widgetsApi",
             rest_api_name="Widget Service",
             description="This service serves widgets.",
-            default_integration=backend_integration
+            default_integration=backend_integration,
         )
 
         api.root.add_method("GET", backend_integration)   # GET /
 
         # We assign the function to a local variable for the Object.
         self._api = api
-
-        cdk.CfnOutput(self, "URL", value=api.url)
     
 
     # Using the property decorator
