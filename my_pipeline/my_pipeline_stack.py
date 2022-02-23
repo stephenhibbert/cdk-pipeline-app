@@ -18,7 +18,7 @@ class MyPipelineStack(cdk.Stack):
                                 "cdk synth"]
                         ),
                         # Turn this on because the pipeline uses Docker image assets
-                        docker_enabled_for_self_mutation=True
+                        docker_enabled_for_synth=True
                     )
         
         pipeline.add_stage(MyPipelineAppStage(self, "Application"))
