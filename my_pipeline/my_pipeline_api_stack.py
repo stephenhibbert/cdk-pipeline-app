@@ -3,7 +3,7 @@ from constructs import Construct
 from aws_cdk.aws_apigateway import RestApi, IRestApi, LambdaIntegration, Method
 from aws_cdk.aws_lambda import IFunction, CfnPermission
 
-# Override the bind function to remove the permissions so we can add them manually code from https://github.com/aws/aws-cdk/issues/9327
+# Override the LambdaIntegration bind function to remove the permissions so we can add them manually code from https://github.com/aws/aws-cdk/issues/9327
 class CustomLambdaIntegration(LambdaIntegration):
     def __init__(self, handler, **kwargs):
         super().__init__(handler, **kwargs)
@@ -24,9 +24,9 @@ class MyApiStack(cdk.Stack):
         backend_integration = CustomLambdaIntegration(referenced_function,
                 request_templates={"text/plain": '{ "statusCode": "200" }'})
         
-        api = RestApi(self, "widgetsApi",
-            rest_api_name="Widget Service",
-            description="This service serves widgets.",
+        api = RestApi(self, "myRestApi",
+            rest_api_name="My Service",
+            description="This service invokes cross account Lambda functions.",
             default_integration=backend_integration,
         )
 
