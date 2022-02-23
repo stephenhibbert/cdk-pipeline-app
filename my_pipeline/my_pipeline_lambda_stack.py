@@ -1,7 +1,7 @@
 import aws_cdk as cdk
 from constructs import Construct
 from aws_cdk.aws_lambda import Function, Code, Runtime
-from aws_cdk.aws_apigateway import IRestApi, AwsIntegration
+from aws_cdk.aws_apigateway import IRestApi, AwsIntegration, IntegrationResponse, IntegrationOptions
 from aws_cdk.aws_iam import ServicePrincipal
 
 class MyLambdaStack(cdk.Stack):
@@ -18,12 +18,15 @@ class MyLambdaStack(cdk.Stack):
         )
 
         # Not using Lambda integration because need manual control of permissions for cross-account access
-        get_widgets_integration = AwsIntegration(
+        get_widgets_method = referenced_api.root.add_method("GET", AwsIntegration(
             service="lambda",
-            path=f"2015-03-31/functions/{widget_function.function_arn}/invocations"
+            path=f"2015-03-31/functions/{widget_function.function_arn}/invocations",
+            options=IntegrationOptions(
+                    integration_responses=[IntegrationResponse(status_code="200")]
+                )
+            )
         )
 
-        get_widgets_method = referenced_api.root.add_method("GET", get_widgets_integration)   # GET /
         api_principal = ServicePrincipal("apigateway.amazonaws.com")
 
         # aws lambda add-permission --function-name "arn:aws:lambda:eu-west-1:674804771444:function:test-lambdastackckmymainfunctiondb89099e5d1f3e555605" --source-arn "arn:aws:execute-api:eu-west-1:862701562420:d3v3x3nudb/*/GET/"   --principal apigateway.amazonaws.com   --statement-id 48284be6-0732-4ef8-9900-7cbf820719b3   --action lambda:InvokeFunction
