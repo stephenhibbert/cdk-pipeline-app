@@ -21,7 +21,7 @@ class MyApiStack(cdk.Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         backend_integration = CustomLambdaIntegration(referenced_function,
-                request_templates={"application/json": '{ "statusCode": "200" }'})
+                request_templates={"text/plain": '{ "statusCode": "200" }'})
         
         api = RestApi(self, "widgetsApi",
             rest_api_name="Widget Service",
