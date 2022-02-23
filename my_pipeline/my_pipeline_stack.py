@@ -21,4 +21,4 @@ class MyPipelineStack(cdk.Stack):
                         docker_enabled_for_self_mutation=True
                     )
         
-        pipeline.add_stage(MyPipelineAppStage(self, "Lambda API"))
+        pipeline.add_stage(MyPipelineAppStage(self, "Application"))
